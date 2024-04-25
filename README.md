@@ -9,7 +9,10 @@
 
 ## Description and motivation
 
-Beyond data wrangling and selecting the best type of visualization, selecting the right aesthetics is a crucial part of data visualization. As data visualisation is used as a storytelling device, there is often a need to create visually appealing plots. However, this may involve a lengthy trial-and-process approach and a great deal of tinkering with visualization code, which can prove daunting to those new to ggplot, R or data visualzation in general. By providing an intuitive interface for applying preset themes to plots, we hope to flatten the learning curve for data visualization using ggplot. In addition to minimizing the complexity of directly working with code, our project may also introduce the novice to best practices by allowing them to work directly with pre-set and useful themes (such as a colorblind-friendly color palette). 
+Beyond data wrangling and selecting the best type of visualization, selecting the right aesthetics is a crucial part of data visualization. As data visualisation is used as a storytelling device, there is often a need to create visually appealing plots. However, this may involve a lengthy trial-and-process approach and a great deal of tinkering with visualization code, which can prove daunting to those new to ggplot, R or data visualzation in general. By providing an intuitive interface for applying preset themes to plots, we hope to flatten the learning curve for data visualization using ggplot. In addition to minimizing the complexity of directly working with code, our project may also introduce the novice to best practices by allowing them to work directly with pre-set and useful themes (such as a colorblind-friendly color palette). We could do something similar to the colorblind-friendly practice in AE Week 9.
+
+![Colorblind-friendly color palette 1](img/okabe-ito.png)
+![Colorblind-friendly color palette 2](img/viridis.png)
 
 
 ## Weekly plan
