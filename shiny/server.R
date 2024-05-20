@@ -34,7 +34,7 @@ function(input, output, session) {
         #      xlab = 'Waiting time to next eruption (in mins)',
         #      main = 'Histogram of waiting times')
       
-      ggplot(dataset(), aes(.data[[input$xcol]], .data[[input$ycol]])) + geom_point()
+      ggplot(dataset(), aes(.data[[input$xcol]], .data[[input$ycol]])) + geom_point(color = input$col)
 
     })
 
