@@ -8,7 +8,7 @@
 #
 
 library(shiny)
-
+library(colourpicker)
 
 # Define UI for application that draws a histogram
 fluidPage(
@@ -28,7 +28,11 @@ fluidPage(
                       choices=list("mtcars", "iris"), selected = "mtcars"),
           selectInput("xcol", "Variable X", c()),
           selectInput("ycol", "Variable Y", c()),
-          colourInput("col", "Select color", value = "black")
+          colourInput("col", "Select color","black" ),
+          selectInput("plotType", "Choose Plot Type",
+                      choices = list("Scatter Plot" = "scatter", 
+                                     "Line Plot" = "line", 
+                                     "Bar Plot" = "bar"))
         ),
 
         # Show a plot of the generated distribution

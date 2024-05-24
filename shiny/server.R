@@ -12,30 +12,34 @@ library(ggplot2)
 
 
 # Define server logic required to draw a histogram
-function(input, output, session) {
-
-    dataset = eventReactive(input$data, {get(input$data)})
+shinyServer(function(input, output, session) {
+  
+  dataset <- reactive({
+    switch(input$data,
+           "mtcars" = mtcars,
+           "iris" = iris)
+  })
+  
+  observe({
+    data <- dataset()
+    updateSelectInput(session, "xcol", choices = names(data), selected = names(data)[1])
+    updateSelectInput(session, "ycol", choices = names(data), selected = names(data)[2])
+  })
+  
+  output$plot <- renderPlot({
+    data <- dataset()
+    p <- ggplot(data, aes_string(x = input$xcol, y = input$ycol)) +
+      theme_minimal() + labs(x = input$xcol, y = input$ycol)
     
-    observeEvent(input$data, {
-      req(dataset())
-      choices <- names(dataset())
-      updateSelectInput(session,"xcol",choices = choices, selected=choices[1])
-      updateSelectInput(session,"ycol",choices = choices, selected=choices[2])
-    }, ignoreNULL = FALSE)
+    # Add plot layers based on the selected plot type
+    if (input$plotType == "scatter") {
+      p <- p + geom_point(color = input$col)
+    } else if (input$plotType == "line") {
+      p <- p + geom_line(color = input$col)
+    } else if (input$plotType == "bar") {
+      p <- p + geom_bar(stat = "identity", fill = input$col)
+    }
     
-    output$plot <- renderPlot({
-
-        # # generate bins based on input$bins from ui.R
-        # x    <- faithful[, 2]
-        # bins <- seq(min(x), max(x), length.out = input$bins + 1)
-        # 
-        # # draw the histogram with the specified number of bins
-        # hist(x, breaks = bins, col = 'darkgray', border = 'white',
-        #      xlab = 'Waiting time to next eruption (in mins)',
-        #      main = 'Histogram of waiting times')
-      
-      ggplot(dataset(), aes(.data[[input$xcol]], .data[[input$ycol]])) + geom_point(color = input$col)
-
-    })
-
-}
+    p
+  })
+})
