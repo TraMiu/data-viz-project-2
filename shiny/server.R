@@ -1,3 +1,7 @@
+library(shiny)
+library(colourpicker)
+library(colourpicker)
+
 # Define server logic
 server <- function(input, output, session) {
   
@@ -77,7 +81,63 @@ server <- function(input, output, session) {
     } else if (input$plotType == "bar") {
       p <- p + geom_bar(stat = "identity", fill = color, width = (input$pointSize )/3)
     }
-    
-    
   }
-}
+  
+  RealTime <- function() {
+    # Function to read data from data.csv
+    read_data <- reactiveFileReader((input$refreshRate * 1000), session, filePath = "data.csv", readFunc = read.csv)
+    
+    
+    # Render the plot
+    output$plot <- renderPlot({
+      data <- read_data()
+      if (input$colorPalette1 == "protanopia") {
+        color <- brewer.pal(6, "Blues")[6]  # Color from Brewer palette that is better for Protanopia
+      } else if (input$colorPalette1 == "tritanopia") {
+        color <- brewer.pal(8, "Set1")[8]  # Color from Brewer palette that is better for Deuteranopia
+      } else {"black"}
+      
+      if (!("X2" %in% names(data))) {
+        ggplot(data, aes(x = X1)) +
+          geom_histogram(fill = color) +
+          labs(x = "X Axis", y = "Y Axis") + 
+          ggtitle("Dynamic Plot")
+      } else {
+        plot_type <- switch(input$plotType1,
+                            "scatter" = geom_point(color = color),
+                            "line" = geom_line(color = color),
+                            "bar" = geom_bar(color = color, stat = "identity"),
+                            "bar")
+        
+        
+        output$table1 <- renderTable({
+          if (input$wantShowSummary) {
+            data %>%
+              summarise_at(vars(X1, X2), list(mean = mean, sd = sd, min = min, max = max)) %>%
+              pivot_longer(cols = everything(), names_to = "Statistic", values_to = "Value") %>%
+              pivot_wider(names_from = "Statistic", values_from = "Value")
+          } else {
+            NULL
+          }
+        })
+        
+        ggplot(data, aes(x = X1, y = X2)) +
+          plot_type +  # Dynamically selected plot type
+          labs(x = "X Axis Title", y = "Y Axis Title") + 
+          ggtitle("Dynamic Plot ")
+        
+        
+        
+      }
+    })
+  }
+  
+  
+  observe({
+    if (input$choice == "Real Time Data") {
+      RealTime()
+    }
+  })
+  }
+  
+  
