@@ -1,6 +1,10 @@
 library(shiny)
 library(colourpicker)
-library(colourpicker)
+library(tidyr)
+library(ggplot2)
+library(dplyr) 
+library(magrittr)
+library(RColorBrewer)
 
 # Define UI for application that draws a histogram
 fluidPage(
