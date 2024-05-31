@@ -1,19 +1,25 @@
 library(shiny)
+library(shinythemes)
 library(colourpicker)
 library(tidyr)
 library(ggplot2)
-library(dplyr) 
+library(dplyr)
 library(magrittr)
 library(RColorBrewer)
 
 # Define UI for application that draws a histogram
 fluidPage(
   
-  # Application title
-  titlePanel("Plot customization app"),
+  # Use a theme from shinythemes
+  theme = shinytheme("flatly"),
   
+  # Application title
+  titlePanel("Group E Project"),
+  
+  # Dropdown to choose between static and real-time data
   selectInput("choice", "Choose Option", choices = c("Static Data", "Real Time Data"), width = 190),
-  # Sidebar with a slider input for number of bins
+  
+  # Sidebar layout with input controls
   sidebarLayout(
     sidebarPanel(
       width = 3,
@@ -22,16 +28,16 @@ fluidPage(
         fileInput("file", "Choose CSV File", accept = c(".csv")),
         uiOutput("xvar_ui"),
         uiOutput("yvar_ui"),
-        selectInput("xcol1", "X-Axis variable (Plot 1)", ""),
-        selectInput("ycol1", "Y-Axis variable (Plot 1)", ""),
-        checkboxInput("wantSecondChart", "Want to compare?", value = FALSE),
+        selectInput("xcol1", "X-Axis Variable (Plot 1)", ""),
+        selectInput("ycol1", "Y-Axis Variable (Plot 1)", ""),
+        checkboxInput("wantSecondChart", "Want to Compare?", value = FALSE),
         conditionalPanel(
           condition = "input.wantSecondChart",
-          selectInput("xcol2", "X-Axis variable (Plot 2)", ""),
-          selectInput("ycol2", "Y-Axis variable (Plot 2)", ""),
-          checkboxInput("wantShowTable", "Want to show differences?", value = FALSE)
+          selectInput("xcol2", "X-Axis Variable (Plot 2)", ""),
+          selectInput("ycol2", "Y-Axis Variable (Plot 2)", ""),
+          checkboxInput("wantShowTable", "Want to Show Differences?", value = FALSE)
         ),
-        colourInput("col", "Select color","black" ),
+        colourInput("col", "Select Color", "black"),
         selectInput("plotType", "Choose Plot Type",
                     choices = list("Scatter Plot" = "scatter", 
                                    "Line Plot" = "line", 
@@ -40,30 +46,29 @@ fluidPage(
                     choices = c("Default" = "default",
                                 "Protanopia" = "protanopia",
                                 "Tritanopia" = "tritanopia")),
-        checkboxInput("removeNA", "Remove NA values", value = TRUE),
+        checkboxInput("removeNA", "Remove NA Values", value = TRUE),
         sliderInput("pointSize", "Point Size", min = 1, max = 5, value = 3)
       ),
       conditionalPanel(
         condition = "input.choice == 'Real Time Data'",
-        checkboxInput("frequencyChart", "Is it not frequency chart?", value = FALSE),
-        conditionalPanel(
-          condition = "input.frequencyChart",
-          selectInput("plotType1", "Choose Plot Type",
-                      choices = list("Scatter Plot" = "scatter", 
-                                     "Line Plot" = "line", 
-                                     "Bar Plot" = "bar")),
-        ),
-        checkboxInput("wantShowSummary", "Want to show summary?", value = FALSE),
+        selectInput("plotType1", "Choose Plot Type",
+                    choices = list("Scatter Plot" = "scatter", 
+                                   "Line Plot" = "line", 
+                                   "Box Plot" = "bar")),
+        checkboxInput("wantShowSummary", "Show Data", value = FALSE),
         selectInput("colorPalette1", "Choose Color Palette",
                     choices = c("Default" = "default",
                                 "Protanopia" = "protanopia",
                                 "Tritanopia" = "tritanopia")),
-        sliderInput("refreshRate", "Refresh After (second): ", min = 1, max = 5, value = 3),
-        actionButton("stopButton", "Stop"),
+        sliderInput("refreshRate", "Refresh After (seconds):", min = 1, max = 5, value = 3),
+        textInput("searchTerm", "Search Data"),
+        dateRangeInput("dateRange", "Select Date Range", start = Sys.Date() - 30, end = Sys.Date()),
+        actionButton("snapshot_btn", "Take Snapshot", class = "btn-primary"),
+        
       )
     ),
     
-    # Show a plot of the generated distribution
+    # Main panel for displaying outputs
     mainPanel(
       conditionalPanel(
         condition = "input.choice != 'Real Time Data'",
@@ -80,24 +85,27 @@ fluidPage(
           column(width = 12, align = "center",
                  conditionalPanel(
                    condition = "input.wantShowTable",
-                   tableOutput("table")
+                   tableOutput("table"),
+                   
                  )
           )
         )
       ),
-      fluidRow(
-        column(
-          width = 12,
-          conditionalPanel(
-            condition = "input.choice == 'Real Time Data'",
-            plotOutput('plot'),
-            column(width = 12, align = "center",
-                     condition = "input.wantShowSummary",
-                     tableOutput("table1")
-                   )
-            )
+      conditionalPanel(
+        condition = "input.choice == 'Real Time Data'",
+        column(width = 6,plotOutput("plot3")),
+        column(width = 6,plotOutput("plot4")),
+        fluidRow(
+          column(width = 12, align = "center",
+                 conditionalPanel(
+                   condition = "input.wantShowSummary",
+                   tableOutput("table1"),
+
+                   dataTableOutput("searchResultsTable")
+                 )
           )
         )
       )
     )
   )
+)

@@ -1,28 +1,31 @@
 import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
 import random
 import time
 
-# Function to generate new data with two columns
-def get_new_data():
-    new_data = pd.DataFrame({
-        'X1': [random.uniform(-3, 3) for _ in range(5)],
-        #Uncomment this if want to run both X1 + X2
-        'X2': [random.uniform(-3, 3) for _ in range(5)]
-    })
-    return new_data
+# Define the date range
+start_date = datetime.now() + timedelta(days=100)
+end_date = datetime.now()
+date_range = pd.date_range(end_date, start_date, normalize=True)
 
-# Path to the CSV file
-csv_file_name = "data.csv"
+# Generate sample data
+np.random.seed(42)  # For reproducibility
+def generate_data(date):
+    return {        
+        'Date': [date] * 15,  # Repeat date three times
+        'X1': [random.randint(1, 10000) for _ in range(15)],  # Generate three random values
+        'X2': [random.randint(1, 10000) for _ in range(15)]
+    }
 
-# Main loop to continuously add new data
 while True:
-    new_data = get_new_data()
+    end_date += timedelta(days=1)  # Increment the date
     
-    # Append new data to the CSV file
-    with open(csv_file_name, 'a') as f:
-        new_data.to_csv(f, header=f.tell()==0, index=False, line_terminator='\n')
+    new_data = generate_data(end_date)
+    df = pd.DataFrame(new_data)
+    with open('data.csv', 'a') as f:
+        df.to_csv(f, header=f.tell()==0, index=False, mode='a')
+    print("Data added to data.csv.")
     
-    print("New data added to the file.")
-    
-    # Pause execution for 5 seconds
-    time.sleep(0.5)
+    # Wait for 2 seconds
+    time.sleep(2)
