@@ -116,7 +116,6 @@ server <- function(input, output, session) {
                )
         )
       )
-      
     }
   })
   
@@ -206,11 +205,7 @@ server <- function(input, output, session) {
       p <- g + geom_col(stat = "identity", position = "dodge")
     } 
     
-    p + labs(
-        x = xlabel, 
-        y = ylabel,
-        title = input$plotTitle,
-        subtitle = input$plotSubtitle)
+    p
     
     # Apply colorblind adjustments if checked
     if (input$colorBlind) {
@@ -229,7 +224,11 @@ server <- function(input, output, session) {
     )
     
     # Return the plot
-    p
+    p + labs(
+      x = xlabel, 
+      y = ylabel,
+      title = input$plotTitle,
+      subtitle = input$plotSubtitle)
   }
   
   
