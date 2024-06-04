@@ -189,20 +189,20 @@ server <- function(input, output, session) {
       color <- brewer.pal(6, "Blues")[6]  # Color from Brewer palette that is better for Protanopia
     } else if (input$colorPalette == "tritanopia") {
       color <- brewer.pal(8, "Set1")[8]  # Color from Brewer palette that is better for Deuteranopia
-    } else {color <- "black"}
+    } else if (input$colorPalette == "default") {color <- "black"}
     
     
     
     if (input$plotType == "scatter") {
       p <- g + geom_point(color = color, size = input$pointSize)
     } else if (input$plotType == "line") {
-      #p <- g + geom_line(color = color, size = input$pointSize, group = 1)
+      p <- g + geom_line(color = color, size = input$pointSize)
       req(input$colorcol) 
-      p <- g + geom_line(color = color, size = input$pointSize, group = 1)
+      p <- g + geom_line()
     } else if (input$plotType == "bar") {
-      #p <- g + geom_bar(stat = "identity", fill = color, width = (input$pointSize )/3)
+      p <- g + geom_bar(stat = "identity", fill = color, width = (input$pointSize )/3)
       req(input$fillcol) 
-      p <- g + geom_col(stat = "identity", position = "dodge", width = (input$pointSize )/3)
+      p <- g + geom_col(stat = "identity", position = "dodge")
     } 
     
     p
