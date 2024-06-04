@@ -198,11 +198,11 @@ server <- function(input, output, session) {
     } else if (input$plotType == "line") {
       p <- g + geom_line(color = color, size = input$pointSize)
       req(input$colorcol) 
-      p <- g + geom_line()
+      p <- g + geom_line( size = input$pointSize)
     } else if (input$plotType == "bar") {
       p <- g + geom_bar(stat = "identity", fill = color, width = (input$pointSize )/3)
       req(input$fillcol) 
-      p <- g + geom_col(stat = "identity", position = "dodge")
+      p <- g + geom_col(stat = "identity", position = "dodge", width = (input$pointSize )/10)
     } 
     
     p
