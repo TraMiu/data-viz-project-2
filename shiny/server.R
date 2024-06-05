@@ -209,10 +209,6 @@ server <- function(input, output, session) {
     
     p
     
-    # Apply colorblind adjustments if checked
-    if (input$colorBlind) {
-      p <- cvd_grid(p)
-    }
     
     # Apply selected theme
     p <- switch(input$themeInput,
@@ -225,6 +221,11 @@ server <- function(input, output, session) {
                   scale_color_manual(values = vinuni_palette_accents),
                 "void" = p + theme_void()
     )
+    
+    # Apply colorblind adjustments if checked
+    if (input$colorBlind) {
+      p <- cvd_grid(p)
+    }
     
     # Return the plot
     p + labs(
