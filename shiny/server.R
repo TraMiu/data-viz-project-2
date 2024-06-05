@@ -39,8 +39,10 @@ theme_vinuni <- function(base_size = 11, base_family = main_font,
       axis.text = element_text(size = rel(1.0)),
       axis.text.x = element_text(face="bold", colour = vinuni_palette_main[1]), 
       axis.text.y = element_text(face="bold", colour = vinuni_palette_main[1]), 
-      legend.text = element_text(size = rel(0.9))
-    )
+      legend.text = element_text(size = rel(0.9)),
+      scale_fill_manual(values = vinuni_palette_accents),
+      scale_color_manual(values = vinuni_palette_accents)
+    ) 
 }
 
 
@@ -175,7 +177,7 @@ server <- function(input, output, session) {
     } else if (input$plotType == "line") {
       g <- ggplot(data, aes_string(x = xcol, y = ycol))
       req(input$colorcol)
-      g <- ggplot(data, aes_string(x = xcol, y = ycol, color = input$colorcol))
+      g <- ggplot(data, aes_string(x = xcol, y = ycol, color = input$colorcol)) 
     } else if (input$plotType == "bar") {
       g <- ggplot(data, aes_string(x = xcol, y = ycol))
       req(input$fillcol)
@@ -219,7 +221,8 @@ server <- function(input, output, session) {
                 "light" = p + theme_light(),
                 "grey" = p + theme_grey(),
                 "classic" = p + theme_classic(),
-                "vinuni" = p + theme_vinuni(),
+                "vinuni" = p + theme_vinuni() + scale_fill_manual(values = vinuni_palette_accents) +
+                  scale_color_manual(values = vinuni_palette_accents),
                 "void" = p + theme_void()
     )
     
